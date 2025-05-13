@@ -2,7 +2,6 @@ import streamlit as st
 from openai import OpenAI
 
 # Show title and description.
-openai.api_key = "k-proj-0bpKiXnwdH5uUIUtmCKN9tZ72Y0PWTIVMWLxoN01DkWQbdzoqJpJiHE1z0jDpMCpLHHkLgaqf3T3BlbkFJ21Lb04RAK8CFTYvjaFNLA7XR8mhJJfjIKxtSVlqniIGBvfRwn2TahRwq2pdJQU8e7EIbCIb1sA"
 
 st.title("💬 Privacy Assistant")
 st.write("Ask any questions about how your personal health data is collected or used.")
