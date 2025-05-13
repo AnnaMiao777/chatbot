@@ -60,8 +60,3 @@ if st.session_state.messages:
             st.markdown(f"**You:** {msg['content']}")
         elif msg["role"] == "assistant":
             st.markdown(f"**Assistant:** {msg['content']}")
-
-# --- Clear button (optional) ---
-if st.button("🔁 Clear conversation"):
-    del st.session_state["messages"]
-    st.experimental_rerun()
