@@ -10,7 +10,7 @@ st.write("Ask any question about Privacy Policy")
 
 # --- Load and preprocess privacy policy PDF ---
 @st.cache_data(show_spinner=False)
-def load_policy_text(file_path="privacy_policy.pdf", max_chars=12000):
+def load_policy_text(file_path="Health_Privacy_Overview_May_2023.pdf", max_chars=12000):
     try:
         reader = PdfReader(file_path)
         text = ""
