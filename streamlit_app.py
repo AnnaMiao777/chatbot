@@ -6,7 +6,7 @@ from PyPDF2 import PdfReader
 # Set page title
 st.set_page_config(page_title="Privacy Assistant Chatbot", layout="centered")
 st.title("🔒 Privacy Assistant Chatbot")
-st.write("Ask any question about Privacy Policy")
+st.write("Ask any question about Privacy Policy, Health data, Privacy Concerns etc.")
 
 # --- Load and preprocess privacy policy PDF ---
 @st.cache_data(show_spinner=False)
