@@ -1,0 +1,10 @@
+name: Keep Alive
+on:
+  schedule:
+    - cron: '0 0 * * *' # This runs every day at midnight.
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping App
+        run: curl https://chatbot-c3fm3z3o3qv.streamlit.app
