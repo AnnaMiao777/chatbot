@@ -39,7 +39,7 @@ FEW_SHOT = [
 
 # --- Initialize conversation history ---
 if "messages" not in st.session_state:
-    st.session_state.messages = [{"role":"system","content": SYSTEM_PROMPT}] + FEW_SHOT.copy()
+    st.session_state.messages = [{"role":"system","content": system_prompt}] + FEW_SHOT.copy()
     
 # --- Input from user ---
 user_input = st.text_input("💬 Your question:", placeholder="e.g., Why do you need my location?")
