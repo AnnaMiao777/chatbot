@@ -27,19 +27,21 @@ system_prompt = (
     "You are a helpful, warm, conversational and accurate privacy assistant embedded in a mobile health app-WellTrack+.\n"
     "Use the following privacy policy as your main reference. Always respond in a natural, user-friendly way.\n\n"
     "avoiding repetition. If the question is unclear, ask for clarification.\n\n"
+    "Here are examples of how you should answer:\n"
+    "- User: Why does the app need my location?\n"
+    "- Assistant: The app uses your location to provide more accurate activity tracking "
+    "and recommendations. Your location is never shared without your consent.\n\n"
+    "- User: Will my health data be sold to others?\n"
+    "- Assistant: No, your health data is not sold. It is only used to improve your "
+    "experience, and you can control sharing in your settings.\n\n"
+    "Now continue the conversation using the privacy policy below as reference:\n\n"
     f"{policy_text}"
 )
 
-FEW_SHOT = [
-    {"role":"user","content":"Why do you need my location?"},
-    {"role":"assistant","content":"According to the policy, location is used only when you enable features like activity routes or safety checks. It isn’t shared without your permission and you can turn it off any time. Want details about storage or who can see it?"},
-    {"role":"user","content":"Will you sell my health data?"},
-    {"role":"assistant","content":"No. The policy states your health data is not sold or used for advertising. Sharing with others occurs only if you authorize it, and you can revoke access."}
-]
 
 # --- Initialize conversation history ---
 if "messages" not in st.session_state:
-    st.session_state.messages = [{"role":"system","content": system_prompt}] + FEW_SHOT.copy()
+    st.session_state.messages = [{"role":"system","content": system_prompt}]
     
 # --- Input from user ---
 user_input = st.text_input("💬 Your question:", placeholder="e.g., Why do you need my location?")
