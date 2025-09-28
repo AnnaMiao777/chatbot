@@ -6,11 +6,11 @@ from PyPDF2 import PdfReader
 # Set page title
 st.set_page_config(page_title="Privacy Assistant Chatbot", layout="centered")
 st.title("🔒 Privacy Assistant Chatbot")
-st.write("Ask any question about Privacy Policy, Health data, Privacy Concerns etc.")
+st.write("Ask any question about WellTrack+ Privacy Policy, data use, Privacy Concerns etc.")
 
 # --- Load and preprocess privacy policy PDF ---
 @st.cache_data(show_spinner=False)
-def load_policy_text(file_path="WellTrack policy.pdf", max_chars=12000):
+def load_policy_text(file_path="WellTrack policy.pdf", max_chars=20000):
     try:
         reader = PdfReader(file_path)
         text = ""
@@ -24,17 +24,25 @@ policy_text = load_policy_text()
 
 # --- Create system prompt with policy content ---
 system_prompt = (
-    "You are a helpful and accurate privacy assistant embedded in a mobile health app.\n"
-    "Answer using the following privacy policy content. Be brief and user-friendly.\n\n"
+    "You are a helpful, warm, conversational and accurate privacy assistant embedded in a mobile health app-WellTrack+.\n"
+    "Use the following privacy policy as your main reference. Always respond in a natural, user-friendly way.\n\n"
+    "avoiding repetition. If the question is unclear, ask for clarification.\n\n"
     f"{policy_text}"
 )
 
+FEW_SHOT = [
+    {"role":"user","content":"Why do you need my location?"},
+    {"role":"assistant","content":"According to the policy, location is used only when you enable features like activity routes or safety checks. It isn’t shared without your permission and you can turn it off any time. Want details about storage or who can see it?"},
+    {"role":"user","content":"Will you sell my health data?"},
+    {"role":"assistant","content":"No. The policy states your health data is not sold or used for advertising. Sharing with others occurs only if you authorize it, and you can revoke access."}
+]
+
 # --- Initialize conversation history ---
 if "messages" not in st.session_state:
-    st.session_state.messages = [{"role": "system", "content": system_prompt}]
-
+    st.session_state.messages = [{"role":"system","content": SYSTEM_PROMPT}] + FEW_SHOT.copy()
+    
 # --- Input from user ---
-user_input = st.text_input("💬 Your question:", placeholder="e.g., Why does the app need my location?")
+user_input = st.text_input("💬 Your question:", placeholder="e.g., Why do you need my location?")
 
 if user_input:
     # Append user's question to the chat history
