@@ -72,7 +72,7 @@ user_input = st.text_input("💬 Your question:", placeholder="e.g., Why do you 
 if user_input:
     # Append user's question to the chat history
     st.session_state.messages.append({"role": "user", "content": user_input})
-
+    append_to_log("user", user_input)
     # Call OpenAI API
     try:
         with st.spinner("Thinking..."):
@@ -81,20 +81,11 @@ if user_input:
                 messages=st.session_state.messages
             )
             assistant_reply = response["choices"][0]["message"]["content"]
+            append_to_log("assistant", assistant_reply)
             st.session_state.messages.append({"role": "assistant", "content": assistant_reply})
     except Exception as e:
         st.error(f"OpenAI API error: {e}")
         assistant_reply = None
-
-# --- Chat input appended to chat log
-# When user sends a message
-st.session_state.messages.append({"role": "user", "content": user_input})
-append_to_log("user", user_input)
-
-# When assistant replies
-# assistant_reply = response["choices"][0]["message"]["content"]
-# st.session_state.messages.append({"role": "assistant", "content": assistant_reply})
-# append_to_log("assistant", assistant_reply)
 
 # --- Display chat history ---
 if st.session_state.messages:
