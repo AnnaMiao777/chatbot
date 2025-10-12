@@ -2,11 +2,47 @@ import streamlit as st
 import openai
 import os
 from PyPDF2 import PdfReader
+import csv
+from uuid import uuid4
+from datetime import datetime, timezone
+
 
 # Set page title
 st.set_page_config(page_title="Privacy Assistant Chatbot", layout="centered")
 st.title("🔒 Privacy Assistant Chatbot")
 st.write("Ask any question about WellTrack+ Privacy Policy, data use, Privacy Concerns etc.")
+
+# ====== LOGGING CONFIG ======
+LOG_DIR = os.environ.get("CHAT_LOG_DIR", "./logs")
+CSV_FIELDS = ["timestamp", "session_id", "turn_index", "role", "content"]
+
+def today_log_path() -> str:
+    """Return the daily CSV log path like logs/chat_YYYY-MM-DD.csv (UTC date)."""
+    os.makedirs(LOG_DIR, exist_ok=True)
+    day_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    return os.path.join(LOG_DIR, f"chat_{day_str}.csv")
+
+def ensure_csv_header(path: str):
+    """Create CSV with header if missing."""
+    if not os.path.exists(path):
+        with open(path, "w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=CSV_FIELDS)
+            writer.writeheader()
+
+def log_message(session_id: str, turn_index: int, role: str, content: str):
+    """Append single message row to today's CSV log."""
+    path = today_log_path()
+    ensure_csv_header(path)
+    with open(path, "a", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=CSV_FIELDS)
+        writer.writerow({
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "session_id": session_id,
+            "turn_index": turn_index,
+            "role": role,
+            "content": content
+        })
+
 
 # --- Load and preprocess privacy policy PDF ---
 @st.cache_data(show_spinner=False)
