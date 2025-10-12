@@ -92,9 +92,9 @@ st.session_state.messages.append({"role": "user", "content": user_input})
 append_to_log("user", user_input)
 
 # When assistant replies
-assistant_reply = response["choices"][0]["message"]["content"]
-st.session_state.messages.append({"role": "assistant", "content": assistant_reply})
-append_to_log("assistant", assistant_reply)
+# assistant_reply = response["choices"][0]["message"]["content"]
+# st.session_state.messages.append({"role": "assistant", "content": assistant_reply})
+# append_to_log("assistant", assistant_reply)
 
 # --- Display chat history ---
 if st.session_state.messages:
