@@ -10,7 +10,15 @@ st.set_page_config(page_title="Privacy Assistant Chatbot", layout="centered")
 st.title("🔒 Privacy Assistant Chatbot")
 st.write("Ask any question about WellTrack+ Privacy Policy, data use, Privacy Concerns etc.")
 
+# --- Helper function for generating log records of user questions
+LOG_FILE = "chat_conversations.log"   # one single file for all conversations
+os.makedirs(os.path.dirname(LOG_FILE) or ".", exist_ok=True)
 
+def append_to_log(role: str, content: str):
+    """Write one line to the shared log file."""
+    with open(LOG_FILE, "a", encoding="utf-8") as f:
+        f.write(f"{role.upper()}: {content}\n")
+        
 # --- Load and preprocess privacy policy PDF ---
 @st.cache_data(show_spinner=False)
 def load_policy_text(file_path="WellTrack policy.pdf", max_chars=20000):
@@ -77,6 +85,16 @@ if user_input:
     except Exception as e:
         st.error(f"OpenAI API error: {e}")
         assistant_reply = None
+
+# --- Chat input appended to chat log
+# When user sends a message
+st.session_state.messages.append({"role": "user", "content": user_input})
+append_to_log("user", user_input)
+
+# When assistant replies
+assistant_reply = response["choices"][0]["message"]["content"]
+st.session_state.messages.append({"role": "assistant", "content": assistant_reply})
+append_to_log("assistant", assistant_reply)
 
 # --- Display chat history ---
 if st.session_state.messages:
