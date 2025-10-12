@@ -14,6 +14,7 @@ st.write("Ask any question about WellTrack+ Privacy Policy, data use, Privacy Co
 LOG_FILE = "chat_conversations.log"   # one single file for all conversations
 os.makedirs(os.path.dirname(LOG_FILE) or ".", exist_ok=True)
 
+@st.cache_data 
 def append_to_log(role: str, content: str):
     """Write one line to the shared log file."""
     with open(LOG_FILE, "a", encoding="utf-8") as f:
