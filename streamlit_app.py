@@ -67,9 +67,7 @@ if "messages" not in st.session_state:
     
 # --- Input from user ---
 global user_input 
-global assistant_reply
 user_input = st.text_input("💬 Your question:", placeholder="e.g., Why do you need my location?")
-assistant_reply = ''
 
 if user_input:
     # Append user's question to the chat history
@@ -82,6 +80,7 @@ if user_input:
                 model="gpt-3.5-turbo",
                 messages=st.session_state.messages
             )
+            global assistant_reply
             assistant_reply = response["choices"][0]["message"]["content"]
 
             st.session_state.messages.append({"role": "assistant", "content": assistant_reply})
