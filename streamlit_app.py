@@ -11,7 +11,7 @@ key_dict = json.loads(st.secrets["textkey"])
 creds = service_account.Credentials.from_service_account_info(key_dict)
 db = firestore.Client(credentials=creds, project="chatbot-36209")
 # Create a reference to the Google post.
-doc_ref = db.collection("logs").document("chatlog")
+doc_ref = db.collection("logs")
 
 # Set page title
 st.set_page_config(page_title="Privacy Assistant Chatbot", layout="centered")
@@ -89,7 +89,7 @@ if user_input:
         assistant_reply = None
 
 # --- write to firestore ---
-doc_ref.update({
+doc_ref.add({
     "timestamp": firestore.SERVER_TIMESTAMP,
     "user": user_input,
     "response": assistant_reply
