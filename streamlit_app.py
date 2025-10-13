@@ -69,6 +69,7 @@ if "messages" not in st.session_state:
 global user_input 
 global assistant_reply
 user_input = st.text_input("💬 Your question:", placeholder="e.g., Why do you need my location?")
+assistant_reply = ''
 
 if user_input:
     # Append user's question to the chat history
