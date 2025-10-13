@@ -2,24 +2,22 @@ import streamlit as st
 import openai
 import os
 from PyPDF2 import PdfReader
+from google.cloud import firestore
+import json
+from google.oauth2 import service_account
 
-
+# Authenticate to Firestore with the JSON account key.
+key_dict = json.loads(st.secrets["textkey"])
+creds = service_account.Credentials.from_service_account_info(key_dict)
+db = firestore.Client(credentials=creds, project="chatbot-36209")
+# Create a reference to the Google post.
+doc_ref = db.collection("logs").document("chatlog")
 
 # Set page title
 st.set_page_config(page_title="Privacy Assistant Chatbot", layout="centered")
 st.title("🔒 Privacy Assistant Chatbot")
 st.write("Ask any question about WellTrack+ Privacy Policy, data use, Privacy Concerns etc.")
 
-# --- Helper function for generating log records of user questions
-LOG_FILE = "chat_conversations.log"   # one single file for all conversations
-os.makedirs(os.path.dirname(LOG_FILE) or ".", exist_ok=True)
-
-@st.cache_data 
-def append_to_log(role: str, content: str):
-    """Write one line to the shared log file."""
-    with open(LOG_FILE, "a", encoding="utf-8") as f:
-        f.write(f"{role.upper()}: {content}\n")
-        
 # --- Load and preprocess privacy policy PDF ---
 @st.cache_data(show_spinner=False)
 def load_policy_text(file_path="WellTrack policy.pdf", max_chars=20000):
@@ -68,12 +66,14 @@ if "messages" not in st.session_state:
     st.session_state.messages = [{"role":"system","content": system_prompt}]
     
 # --- Input from user ---
+global user_input 
+global assistant_reply
 user_input = st.text_input("💬 Your question:", placeholder="e.g., Why do you need my location?")
 
 if user_input:
     # Append user's question to the chat history
     st.session_state.messages.append({"role": "user", "content": user_input})
-    append_to_log("user", user_input)
+  
     # Call OpenAI API
     try:
         with st.spinner("Thinking..."):
@@ -82,11 +82,18 @@ if user_input:
                 messages=st.session_state.messages
             )
             assistant_reply = response["choices"][0]["message"]["content"]
-            append_to_log("assistant", assistant_reply)
+
             st.session_state.messages.append({"role": "assistant", "content": assistant_reply})
     except Exception as e:
         st.error(f"OpenAI API error: {e}")
         assistant_reply = None
+
+# --- write to firestore ---
+doc_ref.update({
+    "timestamp": firestore.SERVER_TIMESTAMP,
+    "user": user_input,
+    "response": assistant_reply
+})
 
 # --- Display chat history ---
 if st.session_state.messages:

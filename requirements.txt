@@ -1,3 +1,4 @@
 streamlit
 openai==0.28
 PyPDF2
+google-cloud-firestore
