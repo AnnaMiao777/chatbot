@@ -89,11 +89,12 @@ if user_input:
         assistant_reply = None
 
 # --- write to firestore ---
-doc_ref.add({
-    "timestamp": firestore.SERVER_TIMESTAMP,
-    "user": user_input,
-    "response": assistant_reply
-})
+if assistant_reply:
+    doc_ref.add({
+        "timestamp": firestore.SERVER_TIMESTAMP,
+        "user": user_input,
+        "response": assistant_reply
+    })
 
 # --- Display chat history ---
 if st.session_state.messages:
