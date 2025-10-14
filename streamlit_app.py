@@ -16,7 +16,7 @@ doc_ref = db.collection("logs")
 # Set page title
 st.set_page_config(page_title="Privacy Assistant Chatbot", layout="centered")
 st.title("🔒 Privacy Assistant Chatbot")
-st.write("Ask any question about WellTrack+ Privacy Policy, data use, Privacy Concerns etc.")
+st.write("Ask any question about WellTrack+ Privacy Policy, data use, Privacy Concerns, Privacy Settings etc.")
 
 # --- Load and preprocess privacy policy PDF ---
 @st.cache_data(show_spinner=False)
